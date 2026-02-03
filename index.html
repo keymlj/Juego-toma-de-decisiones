@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decision App</title>
+
+  <!-- FUENTE -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top, #ff9a9e, #fad0c4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .app {
+      width: 360px;
+      background: white;
+      border-radius: 25px;
+      padding: 25px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      animation: zoomIn 0.6s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .header h1 {
+      margin: 0 0 15px;
+      text-align: center;
+      color: #444;
+    }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      background: #eee;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.5s ease;
+    }
+
+    .card {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #fdfbfb, #ebedee);
+      animation: slide 0.5s ease;
+    }
+
+    @keyframes slide {
+      from { transform: translateX(40px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    #pregunta {
+      margin: 0;
+      color: #333;
+    }
+
+    .opciones {
+      margin-top: 25px;
+    }
+
+    .opciones button {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .opciones button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .si {
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+      color: #055;
+    }
+
+    .no {
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      color: #600;
+    }
+
+    .reset {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      background: none;
+      border: none;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+    <div class="header">
+      <h1>Decision App</h1>
+      <div class="progress">
+        <div class="progress-bar" id="progress"></div>
+      </div>
+    </div>
+
+    <div class="card" id="card">
+      <h2 id="pregunta">¿Irás a entrenar? 💪</h2>
+
+      <div class="opciones" id="opciones">
+        <button class="si" onclick="respuesta('entrenar_si')">Sí</button>
+        <button class="no" onclick="respuesta('entrenar_no')">No</button>
+      </div>
+    </div>
+
+    <button class="reset" onclick="reiniciar()">Reiniciar 🔄</button>
+  </div>
+
+  <script>
+    let progreso = 0;
+
+    function cambiarContenido(texto, botones) {
+      const card = document.getElementById("card");
+      const pregunta = document.getElementById("pregunta");
+      const opciones = document.getElementById("opciones");
+
+      card.style.animation = "none";
+      card.offsetHeight;
+      card.style.animation = "slide 0.5s ease";
+
+      pregunta.innerText = texto;
+      opciones.innerHTML = botones;
+    }
+
+    function avanzar() {
+      progreso += 25;
+      document.getElementById("progress").style.width = progreso + "%";
+    }
+
+    function respuesta(opcion) {
+      avanzar();
+
+      if (opcion === "entrenar_si") {
+        cambiarContenido(
+          "¿Regresarás a buena hora? ⏰",
+          `
+          <button class="si" onclick="respuesta('hora_si')">Sí</button>
+          <button class="no" onclick="respuesta('hora_no')">No</button>
+          `
+        );
+      }
+
+      else if (opcion === "entrenar_no") {
+        cambiarContenido(
+          "¿Harás otras labores en casa? 🏠",
+          `
+          <button class="si" onclick="respuesta('labores_si')">Sí</button>
+          <button class="no" onclick="respuesta('labores_no')">No</button>
+          `
+        );
+      }
+
+      else if (opcion === "labores_si") {
+        cambiarContenido("Ayuda a hacer las labores del hogar 🧹✨", "");
+      }
+
+      else if (opcion === "labores_no") {
+        cambiarContenido("Puedes ir a entrenar 💪🔥", "");
+      }
+
+      else if (opcion === "hora_si") {
+        cambiarContenido(
+          "¿Acabarás a tiempo tus trabajos? 📚",
+          `
+          <button class="si" onclick="respuesta('trabajo_si')">Sí</button>
+          <button class="no" onclick="respuesta('trabajo_no')">No</button>
+          `
+        );
+      }
+
+      else if (opcion === "hora_no") {
+        cambiarContenido("Te atrasarás más ⌛😬", "");
+      }
+
+      else if (opcion === "trabajo_si") {
+        cambiarContenido("¡Todo salió perfecto! 🎉😎", "");
+      }
+
+      else if (opcion === "trabajo_no") {
+        cambiarContenido("Se acumularán tus trabajos 😓", "");
+      }
+    }
+
+    function reiniciar() {
+      progreso = 0;
+      document.getElementById("progress").style.width = "0%";
+
+      cambiarContenido(
+        "¿Irás a entrenar? 💪",
+        `
+        <button class="si" onclick="respuesta('entrenar_si')">Sí</button>
+        <button class="no" onclick="respuesta('entrenar_no')">No</button>
+        `
+      );
+    }
+  </script>
+
+</body>
+</html>
